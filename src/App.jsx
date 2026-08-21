@@ -7,14 +7,49 @@ function App() {
   const [scores, setScores] = useState({
     밀착: 0, 진로: 0, 취업: 0, 사례: 0, 자신감: 0
   });
+  
+  // 💡 [추가됨] 유저가 누른 점수를 문항 순서대로 기억하는 배열 (롤백용)
+  const [answerHistory, setAnswerHistory] = useState([]);
 
   const handleAnswer = (scoreValue) => {
     const currentModule = questionsData[currentQuestionIndex].module;
+
+    // 1. 현재 문항에서 누른 점수를 히스토리에 저장
+    setAnswerHistory((prev) => {
+      const newHistory = [...prev];
+      newHistory[currentQuestionIndex] = scoreValue;
+      return newHistory;
+    });
+
+    // 2. 점수 누적
     setScores((prev) => ({ ...prev, [currentModule]: prev[currentModule] + scoreValue }));
 
+    // 3. 다음 화면 이동 체크
     const isLastQuestion = currentQuestionIndex === questionsData.length - 1;
     if (isLastQuestion) setCurrentStep('result');
     else setCurrentQuestionIndex((prev) => prev + 1);
+  };
+
+  // 💡 [핵심 로직 추가] 뒤로 가기 및 점수 롤백
+  const handleGoBack = () => {
+    // 첫 번째 질문이라면 인트로 화면으로 돌려보냄
+    if (currentQuestionIndex === 0) {
+      setCurrentStep('intro');
+      return;
+    }
+
+    const prevIndex = currentQuestionIndex - 1;
+    const prevModule = questionsData[prevIndex].module;
+    const scoreToSubtract = answerHistory[prevIndex];
+
+    // 이전 문항의 점수 차감 (롤백)
+    setScores((prev) => ({
+      ...prev,
+      [prevModule]: prev[prevModule] - scoreToSubtract
+    }));
+
+    // 인덱스 뒤로 이동
+    setCurrentQuestionIndex(prevIndex);
   };
 
   const getTopModule = () => {
@@ -26,6 +61,7 @@ function App() {
   const resetTest = () => {
     setScores({ 밀착: 0, 진로: 0, 취업: 0, 사례: 0, 자신감: 0 });
     setCurrentQuestionIndex(0);
+    setAnswerHistory([]); // 히스토리도 깔끔하게 초기화
     setCurrentStep('intro');
   };
 
@@ -36,7 +72,7 @@ function App() {
         💡
       </div>
       <h1 className="text-2xl font-extrabold text-gray-800 mb-2">청년 맞춤형 도움 진단</h1>
-      <p className="text-gray-500 mb-10">지금 나에게 가장 필요한 도움은 무엇일까요?</p>
+      <p className="text-gray-500 mb-10">나에게 지금 가장 필요한 도움은 무엇일까요?</p>
       <button 
         onClick={() => setCurrentStep('test')}
         className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-md hover:bg-blue-700 transition active:scale-95"
@@ -51,7 +87,7 @@ function App() {
     const progressPercent = ((currentQuestionIndex + 1) / questionsData.length) * 100;
 
     return (
-      <div className="flex flex-col h-full px-6 py-10 animate-fade-in">
+      <div className="flex flex-col h-full px-6 py-10 animate-fade-in relative">
         {/* 프로그레스 바 */}
         <div className="mb-8">
           <div className="flex justify-between text-sm text-gray-500 mb-2 font-medium">
@@ -67,18 +103,18 @@ function App() {
         </div>
 
         {/* 질문 영역 */}
-        <div className="flex-1">
+        <div className="flex-1 flex flex-col pb-12">
           <h2 className="text-xl font-bold text-gray-800 leading-snug break-keep mb-8">
             <span className="text-blue-500 mr-2">Q.</span>
             {currentQuestion.text}
           </h2>
           
-          {/* 5점 척도 버튼 리스트 */}
-          <div className="flex flex-col gap-3">
+          {/* 5점 척도 버튼 리스트 (그라데이션 색상 적용됨) */}
+          <div className="flex flex-col gap-3 mb-6">
             {[
               { label: '매우 그렇다', value: 5, bg: 'bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold' },
-              { label: '그렇다', value: 4, bg: 'bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold' },        
-              { label: '보통이다', value: 3, bg: 'bg-gray-50 hover:bg-gray-100 text-gray-500 font-bold' },    
+              { label: '그렇다', value: 4, bg: 'bg-blue-50 hover:bg-blue-100 text-blue-600 font-bold' },
+              { label: '보통이다', value: 3, bg: 'bg-gray-50 hover:bg-gray-100 text-gray-500 font-bold' },
               { label: '아니다', value: 2, bg: 'bg-red-50 hover:bg-red-100 text-red-500 font-bold' },
               { label: '매우 아니다', value: 1, bg: 'bg-red-100 hover:bg-red-200 text-red-700 font-bold' },
             ].map((btn) => (
@@ -91,6 +127,14 @@ function App() {
               </button>
             ))}
           </div>
+
+          {/* 💡 [UI 추가됨] 뒤로 가기 버튼 */}
+          <button 
+            onClick={handleGoBack}
+            className="text-gray-400 font-medium text-sm underline underline-offset-4 hover:text-gray-600 transition self-center mt-2"
+          >
+            {currentQuestionIndex === 0 ? '← 처음으로 돌아가기' : '← 이전 질문으로 돌아가기'}
+          </button>
         </div>
       </div>
     );
@@ -99,7 +143,6 @@ function App() {
   const renderResult = () => {
     const topModule = getTopModule();
 
-    // 💡 기획 & 개발 포인트: 모듈별 고유 컬러 매핑 (배경, 테두리, 텍스트 색상)
     const moduleColors = {
       '밀착': { bg: 'bg-red-50', border: 'border-red-500', text: 'text-red-600' },
       '사례': { bg: 'bg-yellow-50', border: 'border-yellow-500', text: 'text-yellow-600' },
@@ -107,22 +150,16 @@ function App() {
       '진로': { bg: 'bg-blue-50', border: 'border-blue-500', text: 'text-blue-600' },
       '취업': { bg: 'bg-purple-50', border: 'border-purple-500', text: 'text-purple-600' }
     };
-
-    // 만약 예기치 않은 데이터가 올 경우를 대비한 기본값(Fallback) 설정
     const currentColors = moduleColors[topModule.name] || moduleColors['진로'];
 
     return (
       <div className="flex flex-col h-full px-6 py-10 animate-fade-in">
-        {/* 상단 캡처 유도 배너 */}
         <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-8 text-sm font-bold flex items-center justify-center shadow-sm">
-          🚨 이 화면을 부스 담당자에게 보여주세요
+          🚨 이 화면을 캡처하여 담당자에게 보여주세요
         </div>
 
-        {/* 결과 카드 */}
         <div className="flex-1 flex flex-col items-center justify-center text-center">
           <h2 className="text-gray-500 font-medium mb-2">당신에게 가장 필요한 지원은</h2>
-          
-          {/* 💡 매핑된 컬러를 동적으로 주입 */}
           <div className={`${currentColors.bg} border-2 ${currentColors.border} rounded-2xl p-8 shadow-lg w-full mb-8 transition-colors duration-300`}>
             <h1 className={`text-4xl font-extrabold ${currentColors.text} mb-3`}>
               [{topModule.name}]
@@ -142,7 +179,6 @@ function App() {
   };
 
   return (
-    // 모바일 뷰포트 레이아웃 (가운데 정렬된 480px 컨테이너)
     <div className="min-h-screen bg-gray-100 flex justify-center font-sans">
       <div className="w-full max-w-md bg-white min-h-screen shadow-2xl relative overflow-x-hidden">
         {currentStep === 'intro' && renderIntro()}
