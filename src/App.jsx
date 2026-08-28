@@ -76,8 +76,9 @@ function App() {
         <div className="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-20 shadow-lg">
           💡
         </div>
-        <h1 className="text-2xl font-extrabold text-gray-800 mb-2">청년 맞춤형 도움 진단</h1>
-          <p className="text-gray-500 mb-10">나에게 지금 가장 필요한 도움은 무엇일까요?</p>
+        <h1 className="text-2xl font-extrabold text-gray-800 mb-2">청년 맞춤형 컬러 진단</h1>
+          <p className="text-gray-500 mb-10">청년도전지원사업의 모듈 중 나에게 지금 가장 필요한 것은 무엇일까요?</p>
+          <p className="text-gray-500 mb-10">여러분에게 꼭 필요한 모듈을 찾아드립니다!</p>
         <button 
           onClick={() => setCurrentStep('test')}
           className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-md hover:bg-blue-700 transition active:scale-95"
