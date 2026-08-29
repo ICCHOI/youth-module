@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import questionsData from './data/questions.json';
 
-import logo1 from './logo/logo1.png'; 
-import logo2 from './logo/logo2.png';
-import logo3 from './logo/logo3.png';
+import combinedLogo from './logo/logos.png';
+import characterImg from './logo/gwandbc.png';
 
 function App() {
   const [currentStep, setCurrentStep] = useState('intro'); 
@@ -71,36 +70,50 @@ function App() {
 
   // --- 화면 렌더링 ---
  const renderIntro = () => (
-    <div className="flex flex-col items-center justify-center h-full px-6 text-center animate-fade-in py-10">
+    <div className="flex flex-col min-h-screen px-6 py-10 text-center animate-fade-in">
+      
+      <div className="flex-1"></div>
+
       <div className="flex flex-col items-center justify-center w-full">
-        <div className="w-16 h-16 bg-blue-500 text-white rounded-full flex items-center justify-center text-2xl font-bold mb-20 shadow-lg">
-          💡
+        <div className="w-28 h-28 rounded-full flex items-center justify-center mb-12 shadow-lg overflow-hidden">
+          <img 
+            src={characterImg} 
+            alt="청년도전지원사업 마스코트" 
+            className="w-20 h-auto object-contain drop-shadow-sm" 
+          />
         </div>
-        <h1 className="text-2xl font-extrabold text-gray-800 mb-2">청년 맞춤형 컬러 진단</h1>
-          <p className="text-gray-500 mb-10">청년도전지원사업의 모듈 중 나에게 지금 가장 필요한 것은 무엇일까요?</p>
-          <p className="text-gray-500 mb-10">여러분에게 꼭 필요한 모듈을 찾아드립니다!</p>
+        
+        <h1 className="text-2xl font-extrabold text-gray-800 mb-4">청년 맞춤형 컬러 진단</h1>
+        
+        {/* 💡 합쳐진 문장 영역 */}
+        <p className="text-gray-500 mb-10 break-keep leading-relaxed">
+          청년도전지원사업의 모듈 중 나에게 지금 가장 필요한 것은 무엇일까요?<br />
+          여러분에게 꼭 필요한 모듈을 찾아드립니다 💡
+        </p>
+
         <button 
           onClick={() => setCurrentStep('test')}
-          className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-md hover:bg-blue-700 transition active:scale-95"
+          className="w-full bg-blue-600 text-white font-bold py-4 rounded-xl shadow-md hover:bg-blue-700 transition active:scale-95 mb-12"
         >
           진단 시작하기
         </button>
+
+        <div className="flex justify-center items-center w-full px-2">
+          <img 
+            src={combinedLogo} 
+            alt="고용노동부 및 협력기관 로고" 
+            className="w-11/12 max-w-sm h-auto object-contain" 
+          />
+        </div>
+
+        <div className="flex-1 flex items-end justify-end w-full pb-2">
+          <p className="text-[10px] text-gray-400 text-right break-keep opacity-80">
+          해당 테스트는 관악청년도전지원사업 또래서포터즈가 활동의 일환으로 제작되었습니다.
+          </p>
+        </div>
       </div>
 
-      {/* 💡 2. [수정됨] mt-8을 mt-12로 늘려서 버튼과 로고 사이의 숨통을 트여줌 */}
-      <div className="mt-12 grid grid-cols-3 gap-3 w-full px-2">
-        <div className="flex justify-center items-center h-12">
-          <img src={logo1} alt="고용노동부" className="max-w-full max-h-full object-contain" />
-        </div>
-        <div className="flex justify-center items-center h-12">
-          {/* 두 번째 이미지 경로/이름은 실제 저장하신 이름으로 맞춰주세요! */}
-          <img src={logo2} alt="청년도전지원사업" className="max-w-full max-h-full object-contain" />
-        </div>
-        <div className="flex justify-center items-center h-12">
-          {/* 아까 말씀드린 크기 조절 꼼수(scale-75)를 살짝 넣어두었습니다 ㅎㅎ 필요 없으시면 지우셔도 됩니다! */}
-          <img src={logo3} alt="관악청년청" className="max-w-full max-h-full object-contain scale-75" />
-        </div>
-      </div>
+      <div className="flex-1"></div>
       
     </div>
   );
@@ -187,7 +200,7 @@ function App() {
             <h1 className={`text-4xl font-extrabold ${currentColors.text} mb-3`}>
               [{topModule.name}]
             </h1> 
-            <p className="text-gray-700 font-medium">해당 분야의 집중 상담을 추천합니다.</p>
+            <p className="text-gray-700 font-medium">해당 분야의 모듈을 추천합니다.</p>
           </div>
         </div>
 
