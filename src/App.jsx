@@ -108,7 +108,7 @@ function App() {
 
         <div className="flex-1 flex items-end justify-end w-full pb-2">
           <p className="text-[10px] text-gray-400 text-right break-keep opacity-80">
-          해당 테스트는 관악청년도전지원사업 또래서포터즈가 활동의 일환으로 제작되었습니다.
+          해당 테스트는 관악청년도전지원사업 또래서포터즈 활동의 일환으로 제작되었습니다.
           </p>
         </div>
       </div>
