@@ -217,7 +217,7 @@ function App() {
                 <h1 className={`text-4xl font-extrabold ${currentColors.text} mb-3`}>
                   [{topModule.name}]
                 </h1>
-                <p className="text-gray-700 font-medium">해당 분야의 집중 상담을 추천합니다.</p>
+                <p className="text-gray-700 font-medium">해당 분야의 모듈을 추천합니다.</p>
               </div>
 
               {/* --- 뒷면 (모듈 설명) --- */}
@@ -239,7 +239,7 @@ function App() {
           </div>
 
           <p className="text-sm text-gray-400 mt-6 animate-pulse font-medium">
-            👆 카드를 터치해서 설명을 확인해 보세요!
+            👆 카드를 클릭한 후 모듈에 대한 설명을 확인해 보세요!
           </p>
         </div>
 
