@@ -47,11 +47,21 @@ function App() {
   };
 
   const getTopModule = () => {
+
     const maxScore = Math.max(...Object.values(scores));
-    const topModuleName = Object.keys(scores).find(module => scores[module] === maxScore);
+    
+    // 2. 최고 점수를 받은 모듈(들)을 모두 추려내기 (동점자 배열 생성)
+    const tiedModules = Object.keys(scores).filter(module => scores[module] === maxScore);
+    
+    // 3. 💡 동점자 우선순위 서열 (1순위 ~ 5순위)
+    const priority = ['밀착', '자신감', '사례', '진로', '취업'];
+    
+    // 4. 우선순위 기준표를 위에서부터 훑으면서, 동점자 명단에 있는 가장 첫 번째 모듈을 최종 1등으로 선정
+    const topModuleName = priority.find(module => tiedModules.includes(module));
+    
     return { name: topModuleName, score: maxScore };
   };
-
+  
   const resetTest = () => {
     setScores({ 밀착: 0, 진로: 0, 취업: 0, 사례: 0, 자신감: 0 });
     setCurrentQuestionIndex(0);
@@ -74,7 +84,8 @@ function App() {
         </div>
         <h1 className="text-2xl font-extrabold text-gray-800 mb-4">청년 맞춤형 컬러 진단</h1>
         <p className="text-gray-500 mb-10 break-keep leading-relaxed">
-          청년도전지원사업의 모듈 중 나에게 지금 가장 필요한 것은 무엇일까요?<br />
+          청년도전지원사업의 모듈 중<br /> 
+          나에게 지금 가장 필요한 것은 무엇일까요?<br />
           여러분에게 꼭 필요한 모듈을 찾아드립니다 💡
         </p>
         <button 
@@ -243,12 +254,27 @@ function App() {
           </p>
         </div>
 
-        <button 
-          onClick={resetTest} 
-          className="w-full bg-gray-800 text-white font-bold py-4 rounded-xl shadow-md hover:bg-gray-900 transition active:scale-95"
-        >
-          처음부터 다시하기
-        </button>
+        <div className="w-full flex flex-col gap-3 mt-8">
+          
+          {/* 1. 카카오톡 플러스친구 버튼 (카카오 공식 브랜드 컬러 #FEE500 적용) */}
+          <a 
+            href="https://pf.kakao.com/_xfvFDxj" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="w-full bg-[#FEE500] text-[#191919] font-bold py-4 rounded-xl shadow-md hover:brightness-95 transition active:scale-95 flex items-center justify-center gap-2"
+          >
+            <span className="text-xl">💬</span> 관악청년청 카카오톡 채널 추가
+          </a>
+
+          {/* 2. 처음부터 다시하기 버튼 */}
+          <button 
+            onClick={resetTest} 
+            className="w-full bg-gray-800 text-white font-bold py-4 rounded-xl shadow-md hover:bg-gray-900 transition active:scale-95"
+          >
+            처음부터 다시하기
+          </button>
+          
+        </div>
       </div>
     );
   };
